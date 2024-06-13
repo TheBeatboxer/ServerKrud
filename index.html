@@ -9,20 +9,28 @@
 <body>
     <div class="container">
         <h1>Biblioteca CRUD</h1>
-        <form id="bookForm">
-            <input type="hidden" id="bookId">
-            <input type="text" id="title" placeholder="Título" required>
-            <input type="text" id="author" placeholder="Autor" required>
-            <input type="text" id="year" placeholder="Año" required>
+
+        <form id="bookForm" method="post" action="crud.php">
+            <input type="hidden" name="create">
+            <input type="text" name="codigo" placeholder="Código" required>
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="text" name="apellidop" placeholder="Apellido Paterno" required>
+            <input type="text" name="apellidm" placeholder="Apellido Materno" required>
+            <input type="text" name="dni" placeholder="DNI" required>
+            <input type="text" name="facultad" placeholder="Facultad" required>
             <button type="submit">Guardar</button>
         </form>
+        
         <table>
             <thead>
                 <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Año</th>
-                    <th>Acciones</th>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>DNI</th>
+                    <th>Facultad</th>
+
                 </tr>
             </thead>
             <tbody id="bookList"></tbody>
