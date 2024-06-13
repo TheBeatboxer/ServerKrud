@@ -1,59 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
     const bookForm = document.getElementById('bookForm');
     const bookList = document.getElementById('bookList');
-    let books = JSON.parse(localStorage.getItem('books')) || [];
     
     function renderBooks() {
-        bookList.innerHTML = '';
-        books.forEach((book, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${book.title}</td>
-                <td>${book.author}</td>
-                <td>${book.year}</td>
-                <td class="actions">
-                    <button class="edit" onclick="editBook(${index})">Editar</button>
-                    <button class="delete" onclick="deleteBook(${index})">Eliminar</button>
-                </td>
-            `;
-            bookList.appendChild(tr);
-        });
+        // Llamada a PHP para obtener los datos de los estudiantes y renderizarlos en la tabla
+        fetch('CRUD.php')
+            .then(response => response.text())
+            .then(data => {
+                bookList.innerHTML = data;
+            })
+            .catch(error => console.error('Error al obtener los datos:', error));
     }
     
     bookForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const bookId = document.getElementById('bookId').value;
-        const title = document.getElementById('title').value;
-        const author = document.getElementById('author').value;
-        const year = document.getElementById('year').value;
+        const formData = new FormData(bookForm);
         
-        if (bookId) {
-            // Update book
-            books[bookId] = { title, author, year };
-        } else {
-            // Add new book
-            books.push({ title, author, year });
-        }
-        
-        localStorage.setItem('books', JSON.stringify(books));
-        bookForm.reset();
-        document.getElementById('bookId').value = '';  // Reset the bookId field
-        renderBooks();
+        // Enviar los datos del formulario al servidor PHP
+        fetch('CRUD.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Imprimir respuesta del servidor (puede ser un mensaje de éxito o error)
+            console.log(data);
+            // Volver a renderizar la lista de estudiantes
+            renderBooks();
+        })
+        .catch(error => console.error('Error al enviar los datos:', error));
     });
     
     window.editBook = (index) => {
-        const book = books[index];
-        document.getElementById('bookId').value = index;
-        document.getElementById('title').value = book.title;
-        document.getElementById('author').value = book.author;
-        document.getElementById('year').value = book.year;
+        // Esta función no necesita modificarse si estás usando el mismo formulario para editar
+        // Simplemente muestra los datos del estudiante en el formulario
     };
     
     window.deleteBook = (index) => {
-        books.splice(index, 1);
-        localStorage.setItem('books', JSON.stringify(books));
-        renderBooks();
+        // Esta función no necesita modificarse, ya que elimina un estudiante localmente
+        // Después de eliminar, se volverá a renderizar la lista de estudiantes
     };
     
-    renderBooks();
+    renderBooks(); // Renderizar la lista de estudiantes al cargar la página
 });
